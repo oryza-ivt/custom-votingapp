@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  vote:
+    image: dockersamples/examplevotingapp_vote
+    extra_hosts:
+      - "redis:192.168.1.80"
+      - "db:192.168.1.80"
+    environment:
+      OPTION_A: "${OPTION_A:-Cats}"
+      OPTION_B: "${OPTION_B:-Dogs}"
+    ports:
+      - "8080:80"
+    networks:
+      - front-tier
+      - back-tier
+
+  result:
+    image: dockersamples/examplevotingapp_result
+    extra_hosts:
+      - "redis:192.168.1.80"
+      - "db:192.168.1.80"
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
+      POSTGRES_DB: "${POSTGRES_DB:-postgres}"
+    ports:
+      - "8081:80"
+    networks:
+      - front-tier
+      - back-tier
+
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    extra_hosts:
+      - "redis:192.168.1.80"
+      - "db:192.168.1.80"
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
+      POSTGRES_DB: "${POSTGRES_DB:-postgres}"
+    networks:
+      - back-tier
+
+networks:
+  front-tier:
+  back-tier:
