@@ -7,3 +7,7 @@ services:
       - "8080:80"
     volumes:
       - ./html:/usr/share/nginx/html:ro
+    networks:
+    - simpleweb-network
+networks:
+  simpleweb-network:
